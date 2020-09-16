@@ -1,0 +1,34 @@
+elastic:
+  hosts:
+    - http://10.220.1.150:9200/
+  ssl: false         # not implemented yet
+  certfile: ./ca.crt # not implemented yet
+  index: "ajolog"
+  fields:
+    - action
+    - responsedate
+  query: |
+    {
+      "_source": ["action","responsedate"],
+       "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "hostname": {
+                  "query": "api-router02"
+                }
+              }
+            },
+            {
+              "match": {
+                "status": {
+                  "query": "418"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "size": 5000
+    }
